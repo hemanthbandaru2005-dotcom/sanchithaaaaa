@@ -1,89 +1,402 @@
-table.innerHTML+=`
+<!DOCTYPE html>  <html>  
+<head>  
+<meta charset="UTF-8">  
+<title>Hospital Management System</title>  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>  <style>  
+  
+body{  
+font-family:Arial;  
+margin:0;  
+background:#f2f6fc;  
+}  
+  
+/* LOGIN */  
+  
+#loginPage{  
+display:flex;  
+justify-content:center;  
+align-items:center;  
+height:100vh;  
+background:#0a6ebd;  
+}  
+  
+.loginBox{  
+background:white;  
+padding:30px;  
+border-radius:10px;  
+width:300px;  
+text-align:center;  
+}  
+  
+.loginBox input{  
+width:100%;  
+padding:10px;  
+margin:10px 0;  
+}  
+  
+/* HEADER */  
+  
+header{  
+background:#0a6ebd;  
+color:white;  
+padding:15px;  
+text-align:center;  
+font-size:24px;  
+}  
+  
+/* NAV */  
+  
+nav{  
+display:flex;  
+justify-content:center;  
+background:#084c8d;  
+}  
+  
+nav button{  
+background:none;  
+border:none;  
+color:white;  
+padding:15px;  
+font-size:16px;  
+cursor:pointer;  
+}  
+  
+nav button:hover{  
+background:#0a6ebd;  
+}  
+  
+.container{  
+padding:20px;  
+}  
+  
+.hidden{  
+display:none;  
+}  
+  
+/* GRID */  
+  
+.grid{  
+display:grid;  
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));  
+gap:20px;  
+}  
+  
+/* CARD */  
+  
+.card{  
+background:white;  
+padding:20px;  
+border-radius:10px;  
+text-align:center;  
+box-shadow:0 2px 8px rgba(0,0,0,0.2);  
+}  
+  
+.card img{  
+width:100px;  
+height:100px;  
+border-radius:50%;  
+object-fit:cover;  
+}  
+  
+/* TABLE */  
+  
+table{  
+width:100%;  
+border-collapse:collapse;  
+background:white;  
+}  
+  
+th,td{  
+border:1px solid #ddd;  
+padding:10px;  
+text-align:center;  
+}  
+  
+th{  
+background:#0a6ebd;  
+color:white;  
+}  
+  
+/* BUTTONS */  
+  
+.deleteBtn{  
+background:red;  
+color:white;  
+border:none;  
+padding:6px 10px;  
+cursor:pointer;  
+}  
+  
+.downloadBtn{  
+background:green;  
+color:white;  
+border:none;  
+padding:10px;  
+margin-bottom:10px;  
+}  
+  
+.searchBox{  
+padding:8px;  
+margin-bottom:10px;  
+width:220px;  
+}  
+  
+</style>  </head>  <body>  <!-- LOGIN -->  <div id="loginPage">  
+<div class="loginBox">  
+<h2>Hospital Login</h2>  
+<input type="text" id="username" placeholder="Username">  
+<input type="password" id="password" placeholder="Password">  
+<button onclick="login()">Login</button>  
+<p id="error" style="color:red"></p>  
+</div>  
+</div>  <!-- MAIN SYSTEM -->  <div id="mainSystem" class="hidden">  <header>🏥 Hospital Management System</header>  <nav>  
+<button onclick="showPage('dashboard')">Dashboard</button>  
+<button onclick="showPage('doctors')">Doctors</button>  
+<button onclick="showPage('patients')">Patients</button>  
+<button onclick="showPage('appointments')">Appointments</button>  
+</nav>  <div class="container">  <!-- DASHBOARD -->  <div id="dashboard">  <h2>Hospital Dashboard</h2>  <div class="grid">  <div class="card"><h3>Total Nurses 👩‍⚕️</h3><h2>25</h2></div>  
+<div class="card"><h3>Total Staff 👨‍💼</h3><h2>60</h2></div>  
+<div class="card"><h3>Emergency Cases 🚑</h3><h2>5</h2></div>  
+<div class="card"><h3>Discharged Patients 📤</h3><h2>8</h2></div>  
+<div class="card"><h3>Admitted Patients 🛌</h3><h2>20</h2></div>  
+<div class="card"><h3>Laboratory Reports 🔬</h3><h2>40</h2></div>  
+<div class="card"><h3>Pharmacy Orders 💊</h3><h2>55</h2></div>  
+<div class="card"><h3>Surgery Schedule 🔪</h3><h2>3</h2></div>  
+<div class="card"><h3>Billing / Payments 💳</h3><h2>₹1,20,000</h2></div>  
+<div class="card"><h3>Ambulance Request 🚑</h3><h2>4</h2></div>  
+<div class="card">  
+<h3>Departments 🏢</h3>  
+<p>  
+Cardiology<br>  
+Neurology<br>  
+Orthopedics<br>  
+Dermatology<br>  
+Pediatrics  
+</p>  
+</div>  <div class="card">  
+<h3>Upcoming Appointments ⏰</h3>  
+<p>  
+10:00 AM – Dr John<br>  
+11:30 AM – Dr Ravi<br>  
+1:00 PM – Dr Priya  
+</p>  
+</div>  
+</div>  
+</div>  <!-- DOCTORS -->  <div id="doctors" class="hidden">  <h2>Doctors</h2>  <div class="grid" id="doctorList"></div>  <div id="doctorDetails" class="card hidden"></div>  </div>  <!-- PATIENTS -->  <div id="patients" class="hidden">  <h2>Patient Records</h2>  <input class="searchBox" id="searchPatient" placeholder="Search Patient..." onkeyup="searchPatient()">  <br>  <button class="downloadBtn" onclick="downloadExcel()">Download Excel</button>
 
-<tr>    
-<td>${p.name}</td>    
-<td>${p.disease}</td>    
-<td>${p.doctor}</td>    
-<td>${p.medicine}</td>    
-<td>${p.history}</td>    
-<td>₹${bill}</td>    
-<td><button class="deleteBtn" onclick="deletePatient(${index})">Delete</button></td>    
-</tr>  `;  });
+<table>  <thead>  
+<tr>  
+<th>Name</th>  
+<th>Disease</th>  
+<th>Doctor</th>  
+<th>Medicines</th>  
+<th>Medical History</th>  
+<th>Bill</th>  
+</tr>  
+</thead>  <tbody id="patientTable"></tbody>  </table>  </div>  <!-- APPOINTMENTS -->  <div id="appointments" class="hidden">  <h2>Appointment Booking</h2>  <input type="text" id="pname" placeholder="Patient Name">  
+<input type="text" id="dname" placeholder="Doctor Name">  
+<input type="date" id="date">  <button onclick="bookAppointment()">Book Appointment</button>
 
-}
-
-loadPatients();
-
-function deletePatient(i){
-patients.splice(i,1);
-loadPatients();
-}
-
-/* SEARCH */
-
-function searchPatient(){
-
-let value=document.getElementById("searchPatient").value.toLowerCase();
-
-let filtered=patients.filter(p =>
-p.name.toLowerCase().includes(value) ||
-p.disease.toLowerCase().includes(value)
-);
-
-loadPatients(filtered);
-
-}
-
-/* EXCEL DOWNLOAD */
-
-function downloadExcel(){
-
-const worksheet=XLSX.utils.json_to_sheet(patients);
-const workbook=XLSX.utils.book_new();
-
-XLSX.utils.book_append_sheet(workbook,worksheet,"Patients");
-
-XLSX.writeFile(workbook,"Patients.xlsx");
-
-}
-
-/* APPOINTMENTS */
-const appointmentList=document.getElementById("appointmentList");
-
-const autoAppointments=[
-"Ramesh appointment with Dr John Smith on 2026-03-12",
-"Suresh appointment with Dr Ravi Kumar on 2026-03-12",
-"Priya appointment with Dr Priya Sharma on 2026-03-13",
-"Kiran appointment with Dr David Lee on 2026-03-13",
-"Anitha appointment with Dr Anjali Mehta on 2026-03-14",
-"Rahul appointment with Dr Rahul Das on 2026-03-14",
-"Sneha appointment with Dr Neha Kapoor on 2026-03-15",
-"Arjun appointment with Dr Arjun Patel on 2026-03-15",
-"Fatima appointment with Dr Sara Khan on 2026-03-16",
-"David appointment with Dr Michael Brown on 2026-03-16"
-
-];
-
-autoAppointments.forEach(a=>{
-let li=document.createElement("li");
-li.innerText=a;
-appointmentList.appendChild(li);
-});
-
-function bookAppointment(){
-
-let pname=document.getElementById("pname").value;
-let dname=document.getElementById("dname").value;
-let date=document.getElementById("date").value;
-
-let li=document.createElement("li");
-
-li.innerText=pname+" appointment with "+dname+" on "+date;
-
-appointmentList.appendChild(li);
-
-}
-
-</script>  </body>
-
-</html> 
+<ul id="appointmentList"></ul>  </div>  </div>  
+</div>  <script>  
+  
+/* LOGIN */  
+  
+function login(){  
+  
+let u=document.getElementById("username").value;  
+let p=document.getElementById("password").value;  
+  
+if(u==="admin" && p==="1234"){  
+document.getElementById("loginPage").style.display="none";  
+document.getElementById("mainSystem").classList.remove("hidden");  
+}else{  
+document.getElementById("error").innerText="Invalid Login";  
+}  
+  
+}  
+  
+/* PAGE SWITCH */  
+  
+function showPage(page){  
+  
+["dashboard","doctors","patients","appointments"].forEach(p=>{  
+document.getElementById(p).classList.add("hidden");  
+});  
+  
+document.getElementById(page).classList.remove("hidden");  
+  
+}  
+  
+/* DOCTORS */  
+  
+const doctors=[  
+{name:"Dr John Smith",spec:"Cardiologist",exp:"12 years",phone:"9876543210",photo:"https://randomuser.me/api/portraits/men/11.jpg"},  
+{name:"Dr Ravi Kumar",spec:"Neurologist",exp:"10 years",phone:"9876543211",photo:"https://randomuser.me/api/portraits/men/12.jpg"},  
+{name:"Dr Priya Sharma",spec:"Dermatologist",exp:"8 years",phone:"9876543212",photo:"https://randomuser.me/api/portraits/women/13.jpg"},  
+{name:"Dr David Lee",spec:"Orthopedic",exp:"15 years",phone:"9876543213",photo:"https://randomuser.me/api/portraits/men/14.jpg"},  
+{name:"Dr Anjali Mehta",spec:"Pediatrician",exp:"7 years",phone:"9876543214",photo:"https://randomuser.me/api/portraits/women/15.jpg"},  
+{name:"Dr Rahul Das",spec:"Dentist",exp:"9 years",phone:"9876543215",photo:"https://randomuser.me/api/portraits/men/16.jpg"},  
+{name:"Dr Neha Kapoor",spec:"Psychiatrist",exp:"11 years",phone:"9876543216",photo:"https://randomuser.me/api/portraits/women/17.jpg"},  
+{name:"Dr Arjun Patel",spec:"Radiologist",exp:"6 years",phone:"9876543217",photo:"https://randomuser.me/api/portraits/men/18.jpg"},  
+{name:"Dr Sara Khan",spec:"ENT Specialist",exp:"8 years",phone:"9876543218",photo:"https://randomuser.me/api/portraits/women/19.jpg"},  
+{name:"Dr Michael Brown",spec:"Oncologist",exp:"14 years",phone:"9876543219",photo:"https://randomuser.me/api/portraits/men/20.jpg"}  
+];  
+  
+const doctorList=document.getElementById("doctorList");  
+  
+doctors.forEach((d,i)=>{  
+  
+doctorList.innerHTML+=`  
+<div class="card">  
+<img src="${d.photo}">  
+<h3>${d.name}</h3>  
+<p>${d.spec}</p>  
+<button onclick="viewDoctor(${i})">View Details</button>  
+</div>  
+`;  
+  
+});  
+  
+function viewDoctor(i){  
+  
+const d=doctors[i];  
+  
+document.getElementById("doctorDetails").classList.remove("hidden");  
+  
+document.getElementById("doctorDetails").innerHTML=`  
+<img src="${d.photo}">  
+<h2>${d.name}</h2>  
+<p><b>Specialization:</b> ${d.spec}</p>  
+<p><b>Experience:</b> ${d.exp}</p>  
+<p><b>Phone:</b> ${d.phone}</p>  
+`;  
+  
+}  
+  
+/* MEDICINES */  
+  
+const medicines={  
+"Fever":"Paracetamol, Crocin",  
+"Heart Disease":"Aspirin, Atorvastatin",  
+"Cold":"Cetirizine",  
+"Cancer":"Chemotherapy Drugs",  
+"Fracture":"Pain Killers, Calcium"  
+};  
+  
+const illness=["Fever","Heart Disease","Cold","Cancer","Fracture"];  
+  
+/* PATIENTS */  
+  
+let patients=[];  
+  
+for(let i=1;i<=20;i++){  
+patients.push({  
+name:"Patient "+i,  
+disease:illness[i%5],  
+doctor:doctors[i%5].name,  
+medicine:medicines[illness[i%5]],  
+history:"Visited hospital for treatment and follow-up."  
+});  
+}  
+  
+const table=document.getElementById("patientTable");  
+  
+function loadPatients(data=patients){  
+  
+table.innerHTML="";  
+  
+data.forEach((p,index)=>{  
+  
+let bill=Math.floor(Math.random()*3000)+500;  
+  
+table.innerHTML+=`  
+<tr>  
+<td>${p.name}</td>  
+<td>${p.disease}</td>  
+<td>${p.doctor}</td>  
+<td>${p.medicine}</td>  
+<td>${p.history}</td>  
+<td>₹${bill}</td>  
+<td><button class="deleteBtn" onclick="deletePatient(${index})">Delete</button></td>  
+</tr>  
+  
+`;  
+  
+});  
+  
+}  
+  
+loadPatients();  
+  
+function deletePatient(i){  
+patients.splice(i,1);  
+loadPatients();  
+}  
+  
+/* SEARCH */  
+  
+function searchPatient(){  
+  
+let value=document.getElementById("searchPatient").value.toLowerCase();  
+  
+let filtered=patients.filter(p =>  
+p.name.toLowerCase().includes(value) ||  
+p.disease.toLowerCase().includes(value)  
+);  
+  
+loadPatients(filtered);  
+  
+}  
+  
+/* EXCEL DOWNLOAD */  
+  
+function downloadExcel(){  
+  
+const worksheet=XLSX.utils.json_to_sheet(patients);  
+const workbook=XLSX.utils.book_new();  
+  
+XLSX.utils.book_append_sheet(workbook,worksheet,"Patients");  
+  
+XLSX.writeFile(workbook,"Patients.xlsx");  
+  
+}  
+  
+/* APPOINTMENTS */  
+const appointmentList=document.getElementById("appointmentList");  
+  
+const autoAppointments=[  
+"Ramesh appointment with Dr John Smith on 2026-03-12",  
+"Suresh appointment with Dr Ravi Kumar on 2026-03-12",  
+"Priya appointment with Dr Priya Sharma on 2026-03-13",  
+"Kiran appointment with Dr David Lee on 2026-03-13",  
+"Anitha appointment with Dr Anjali Mehta on 2026-03-14",  
+"Rahul appointment with Dr Rahul Das on 2026-03-14",  
+"Sneha appointment with Dr Neha Kapoor on 2026-03-15",  
+"Arjun appointment with Dr Arjun Patel on 2026-03-15",  
+"Fatima appointment with Dr Sara Khan on 2026-03-16",  
+"David appointment with Dr Michael Brown on 2026-03-16"  
+  
+];  
+  
+autoAppointments.forEach(a=>{  
+let li=document.createElement("li");  
+li.innerText=a;  
+appointmentList.appendChild(li);  
+});  
+  
+function bookAppointment(){  
+  
+let pname=document.getElementById("pname").value;  
+let dname=document.getElementById("dname").value;  
+let date=document.getElementById("date").value;  
+  
+let li=document.createElement("li");  
+  
+li.innerText=pname+" appointment with "+dname+" on "+date;  
+  
+appointmentList.appendChild(li);  
+  
+}  
+  
+</script>  </body>  
+</html>  
